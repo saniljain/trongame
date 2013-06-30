@@ -7,6 +7,7 @@ from numpy import *
 import Queue
 from Queue import *
 from pygame.locals import *
+from pygame import gfxdraw
 pygame.init()					#importing necessary libraries
 
 #declaring necessary variables 
@@ -137,6 +138,12 @@ def voronoi_diagram(x1,y1,x2,y2):
 				draw.rect(screen,blue,square)
 				display.flip()
 				bluesquares+=1
+				for i in range(0,31):
+					pygame.gfxdraw.hline(screen,0,600,i*20,white)
+				for i in range (0,31):
+					pygame.gfxdraw.vline(screen,i*20,0,600,white)
+				display.flip()
+
 			if board[temp.pos_x][temp.pos_y].color =="none" or board[temp.pos_x][temp.pos_y].color =="blue":
 				for i in range(0,4):
 					if temp.pos_x+dx[i]>=0 and temp.pos_x+dx[i]<screen_width/20 and temp.pos_y+dy[i]>=0 and temp.pos_y+dy[i]<screen_height/20:
@@ -170,6 +177,12 @@ def voronoi_diagram(x1,y1,x2,y2):
 							draw.rect(screen,white,square)
 							pygame.display.flip()
 							whitesquares+=1
+							for i in range(0,31):
+								pygame.gfxdraw.hline(screen,0,600,i*20,white)
+							for i in range (0,31):
+								pygame.gfxdraw.vline(screen,i*20,0,600,white)
+							display.flip()
+
 							
 						elif board[temp.pos_x+dx[i]][temp.pos_y+dy[i]].color=="none":
 								var=coordi()
@@ -183,6 +196,12 @@ def voronoi_diagram(x1,y1,x2,y2):
 								greensquares+=1
 								queue2.put(var)
 								count2+=1
+								for i in range(0,31):
+									pygame.gfxdraw.hline(screen,0,600,i*20,white)
+								for i in range (0,31):
+									pygame.gfxdraw.vline(screen,i*20,0,600,white)
+								display.flip()
+
 								
 								
 	#return voronoi_calculator(x1,y1,"blue")-voronoi_calculator(x2,y2,"green")
@@ -230,6 +249,7 @@ def initialize_board():
 			board[x][y]=array()
 
 initialize_board()
+
 # "The coordinates should be between 0 and 29"
 x1=13  #enter any coordinates for coordinates of player1
 y1=12

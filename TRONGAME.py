@@ -7,6 +7,7 @@ from numpy import *
 import Queue
 from Queue import *
 from pygame.locals import *
+from pygame import gfxdraw
 pygame.init()			#importing necessary libraries
 
 #declaring necessary variables 
@@ -51,7 +52,7 @@ comp_count=1
 #references for minimax algorithm
 score_max=99999
 score_min=-99999
-depth_max=1
+depth_max=2
 
 
 
@@ -466,15 +467,12 @@ def minimax_move(object1,object2):
 def predict_move(node1,x1,y1,x2,y2,comp1,comp2,level):
 	global depth_max,score_min,score_max
 	node=minimax_node()
-	
 	node.alpha=node1.alpha
 	node.beta=node1.beta
+
 	if(level<depth_max):
 		if level%2==0:  #max node
-			if comp1!=comp2:
-				node.value=components[comp1]-components[comp2]
-				
-				return node
+			
 			for i in range(0,4):
 				
 				if node.alpha<=node.beta:	
@@ -488,32 +486,14 @@ def predict_move(node1,x1,y1,x2,y2,comp1,comp2,level):
 					else:
 						x1=x1+dx[i]
 						y1=y1+dy[i]
-						comp_temp=comp1
-						if board[x1][y1].art=="no":					
-							board[x1][y1].value=1
-							components[comp1]-=1
-							calc_artpoints()
-							node_temp=predict_move(node,x1,y1,x2,y2,comp1,comp2,level+1)
-							components[comp1]+=1
-
-							board[x1][y1].value=0
-							calc_artpoints()
-							
-						else:												
-							board[x1][y1].value=1
-							calc_components()
-							calc_artpoints()
-							comp1=board[x1][y1].comp
-							node_temp=predict_move(node,x1,y1,x2,y2,comp1,comp2,level+1)
-
-							board[x1][y1].value=0
-							calc_components()
-							calc_artpoints()
-							comp1=comp_temp
-							
+						board[x1][y1].value=1 	#making a wall for the corresponding move
+						node_temp=predict_move(node,x1,y1,x2,y2,comp1,comp2,level+1)
+						board[x1][y1].value=0	#reverting the changes
+														
+												
 
 						if level==0:
-							if node.alpha<=node_temp.value:
+							if node.alpha<=node_temp.value: #determining best move at the first level
 								node.move=i
 								node.alpha=node_temp.value
 						node.alpha=max(node.alpha,node_temp.value)
@@ -528,14 +508,9 @@ def predict_move(node1,x1,y1,x2,y2,comp1,comp2,level):
 			node.value=node.alpha
 			return node
 		if level%2==1 :   #min node
-			if comp1!=comp2:
-				node.value=components[comp1]-components[comp2]
-				
-				return node
-			
-
 			for i in range(0,4):
 				
+
 				if node.alpha<=node.beta:	
 					node_temp=minimax_node()
 					
@@ -543,37 +518,19 @@ def predict_move(node1,x1,y1,x2,y2,comp1,comp2,level):
 						node.value=min(score_max,node.value)
 						
 					elif board[x2+dx[i]][y2+dy[i]].value==1:
-						
 						node.value=min(node.value,score_max)
 						
 					else:
 						x2=x2+dx[i]
 						y2=y2+dy[i]
 						
-						comp_temp=comp2
-						if board[x2][y2].art=="no":					
-							board[x2][y2].value=1
-							components[comp2]-=1
-							calc_artpoints()
-							node_temp=predict_move(node,x1,y1,x2,y2,comp1,comp2,level+1)
-							components[comp2]+=1
-
-							board[x2][y2].value=0
-							calc_artpoints()
-							
-							
-						else:												
-							board[x2][y2].value=1
-							calc_components()
-							calc_artpoints()
-							comp2=board[x1][y1].comp
-							node_temp=predict_move(node,x1,y1,x2,y2,comp1,comp2,level+1)
+						board[x2][y2].value=1
+						node_temp=predict_move(node,x1,y1,x2,y2,comp1,comp2,level+1)
+						board[x2][y2].value=0
+																			
+						
 							
 
-							board[x2][y2].value=0
-							calc_components()
-							calc_artpoints()
-							comp2=comp_temp
 						x2=x2-dx[i]
 						y2=y2-dy[i]
 						
@@ -588,8 +545,10 @@ def predict_move(node1,x1,y1,x2,y2,comp1,comp2,level):
 	if level==depth_max:
 		calc_components()
 		calc_artpoints()
-		node.value=voronoi_diagram(x1,y1,x2,y2)
-		
+		if board[x1][y1].comp==board[x2][y2].comp:
+			node.value=voronoi_diagram(x1,y1,x2,y2)
+		else:
+			node.value=voronoi_diagram(x1,y1,x2,y2)*100 #multiplication by 100 emphasizes that nothing can be changed after going into disconnected components
 		return node
 
 def voronoi_calculator(x,y,color):  #analyses the voronoi area of each player to get effective available area under its control
@@ -940,6 +899,11 @@ pre_move2=move2
 sys.setrecursionlimit(20000)  #recursion depth limit exceeded just in case
 calc_components()  
 calc_artpoints()
+for i in range(0,31):
+	pygame.gfxdraw.hline(screen,0,600,i*20,white)
+for i in range (0,31):
+	pygame.gfxdraw.vline(screen,i*20+10,0,600,white)
+display.flip()
 
 while 1:
 	if(mode==still):   #resetting the arena and variables
@@ -949,6 +913,12 @@ while 1:
 		two_over=0
 		background=rect(0,0,screen_width,screen_height)
 		draw.rect(screen,black,background)
+		for i in range(0,31):
+			pygame.gfxdraw.hline(screen,0,600,i*20,white)
+		for i in range (0,31):
+			pygame.gfxdraw.vline(screen,i*20+10,0,600,white)
+		display.flip()
+
 		pygame.display.flip()
 		blueglider.__init__()
 		greenglider.__init__()
@@ -1013,7 +983,12 @@ while 1:
 			update_board(blueglider)
 		else:
 			one_over=1
-			
+		for i in range(0,31):
+			pygame.gfxdraw.hline(screen,0,600,i*20,white)
+		for i in range (0,31):
+			pygame.gfxdraw.vline(screen,i*20+10,0,600,white)
+		display.flip()
+	
 
 
 		move2=greenglider.tronmove()
@@ -1027,5 +1002,10 @@ while 1:
 				
 		else:
 			two_over=1
-		
+		for i in range(0,31):
+			pygame.gfxdraw.hline(screen,0,600,i*20,white)
+		for i in range (0,31):
+			pygame.gfxdraw.vline(screen,i*20+10,0,600,white)
+		display.flip()
+
 	
