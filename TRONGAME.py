@@ -52,7 +52,7 @@ comp_count=1
 #references for minimax algorithm
 score_max=99999
 score_min=-99999
-depth_max=2
+depth_max=1
 
 
 
@@ -130,13 +130,13 @@ class blueglider:
 	glider_right=pygame.transform.scale(glider_right,(20,20))
 	glider_left=pygame.transform.scale(glider_left,(20,20))
 	comp=0
-	pos_x=screen_width/4
+	pos_x=(screen_width/4)+10
 	pos_y=screen_height/2
 	def __init__(self):     #initiliazing the glider
 		screen.blit(self.glider_right,(self.pos_x,self.pos_y))
 		display.flip()
 		board[self.pos_x/20][self.pos_y/20].value=1
-		self.pos_x=screen_width/4
+		self.pos_x=(screen_width/4)+10
 		self.pos_y=screen_height/2
 	
 #green glider object
@@ -153,13 +153,13 @@ class greenglider:  #same for green glider
 	glider_right=pygame.transform.scale(glider_right,(20,20))
 	glider_left=pygame.transform.scale(glider_left,(20,20))
 	comp=0
-	pos_x=(3*screen_width)/4
+	pos_x=(3*screen_width)/4+10
 	pos_y=screen_height/2
 	def __init__(self):
 		screen.blit(self.glider_left,(self.pos_x,self.pos_y))
 		display.flip()
 		board[self.pos_x/20][self.pos_y/20].value=1
-		self.pos_x=(3*screen_width)/4
+		self.pos_x=((3*screen_width)/4)+10
 		self.pos_y=screen_height/2
 	#getting move of glider
 	def tronmove(self):
@@ -902,7 +902,7 @@ calc_artpoints()
 for i in range(0,31):
 	pygame.gfxdraw.hline(screen,0,600,i*20,white)
 for i in range (0,31):
-	pygame.gfxdraw.vline(screen,i*20+10,0,600,white)
+	pygame.gfxdraw.vline(screen,i*20,0,600,white)
 display.flip()
 
 while 1:
@@ -916,7 +916,7 @@ while 1:
 		for i in range(0,31):
 			pygame.gfxdraw.hline(screen,0,600,i*20,white)
 		for i in range (0,31):
-			pygame.gfxdraw.vline(screen,i*20+10,0,600,white)
+			pygame.gfxdraw.vline(screen,i*20,0,600,white)
 		display.flip()
 
 		pygame.display.flip()
@@ -986,7 +986,7 @@ while 1:
 		for i in range(0,31):
 			pygame.gfxdraw.hline(screen,0,600,i*20,white)
 		for i in range (0,31):
-			pygame.gfxdraw.vline(screen,i*20+10,0,600,white)
+			pygame.gfxdraw.vline(screen,i*20,0,600,white)
 		display.flip()
 	
 
@@ -1005,7 +1005,7 @@ while 1:
 		for i in range(0,31):
 			pygame.gfxdraw.hline(screen,0,600,i*20,white)
 		for i in range (0,31):
-			pygame.gfxdraw.vline(screen,i*20+10,0,600,white)
+			pygame.gfxdraw.vline(screen,i*20,0,600,white)
 		display.flip()
 
 	
